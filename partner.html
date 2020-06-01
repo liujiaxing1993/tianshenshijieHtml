@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width,height=device-height,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="x5-orientation" content="portrait">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/myincome.css">
+    <link rel="stylesheet" href="css/animation.css">
+    <title>合夥人-天神世界</title>
+    <script src="js/jquery-2.2.4.min.js"></script>
+    <script src="js/jquery.copy.min.js"></script>
+    <script src="js/myincome.js"></script>
+    <script src="js/rem.js"></script>
+</head>
+<body class="partner">
+<div class="download-bottom">
+    <div class="pull-left">
+        <img src="img/myincome/game-icon.jpg">
+        <h4>下載天神世界APP</h4>
+        <p>登錄遊戲輕鬆月入$5000</p>
+    </div>
+    <button class="pull-right" type="button" onclick="downJump()">下載</button>
+</div>
+<div class="main">
+    <div class="top-bar">
+        <a class="rep-home" href="javascript:history.back(-1)">
+            <img src="img/myincome/rep-home.png">返回</a>
+        <div id="Div1" class="fb-like" data-href="https://www.facebook.com/DeityOfLegend/" data-width=""
+             data-layout="button_count" data-action="like" data-size="small" data-share="true">
+        </div>
+    </div>
+    <div class="partner-banner">
+        <img src="img/myincome/partner-banner.png"></div>
+    <div class="partner-text">
+        成為天神合夥人<br>
+        將永久獲得更高比例的遊戲廣告的分紅<br>
+        第一時間獲得項目資訊<br>
+    </div>
+    <div class="partner-mail">
+        <p>請寄送郵件至<span>wuweixiaoyouxi@126.com</span></p>
+        郵件中請注明【天神合夥人】，簡單描述自己的
+        實力及可以為項目提供的資源會獲得更高的關注
+        度和合作的可能。
+    </div>
+    <button id="btnEmailCopy" class="copy-btn" type="button">複製郵箱</button>
+</div>
+
+</body>
+<script>
+    // 复制
+    $.copy(
+        {
+            text: "複製成功", //分享提示文案
+            copyUrl: "wuweixiaoyouxi@126.com", //自定义复制链接地址
+            tipTime: 1000, //分享提示消失时间
+            copyId: "#btnEmailCopy"//复制按钮id
+        });
+</script>
+</html>

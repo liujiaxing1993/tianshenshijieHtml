@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width,height=device-height,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="x5-orientation" content="portrait">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="icon" href="favicon.ico" />
+    <link rel="stylesheet" href="css/myincome.css">
+    <link rel="stylesheet" href="css/animation.css">
+    <title>聚寶盆-天神世界</title>
+    <script src="js/jquery-2.2.4.min.js"></script>
+    <script src="js/myincome.js"></script>
+    <script src="js/rem.js"></script>
+</head>
+<body class="invite-reward">
+<div class="download-bottom">
+    <div class="pull-left">
+        <img src="img/myincome/game-icon.jpg">
+        <h4>下載天神世界APP</h4>
+        <p>登錄遊戲輕鬆月入$5000</p>
+    </div>
+    <button class="pull-right" type="button" onclick="downJump()">下載</button>
+</div>
+<div id="main" class="main">
+    <div class="top-bar">
+        <a class="rep-home" href="javascript:history.back(-1)">
+            <img src="img/myincome/rep-home.png">返回</a>
+        <div id="Div1" class="fb-like" data-href="https://www.facebook.com/DeityOfLegend/" data-width=""
+             data-layout="button_count" data-action="like" data-size="small" data-share="true">
+        </div>
+    </div>
+
+    <div class="in-reward-main">
+        <div class="in-reward-top">
+            <h2 class="">我的邀請碼</h2>
+            <button id="btnDownloadCopy" class="red-btn" onclick="DownloadCopy()">
+                <img src="img/myincome/invite/link.png">複製下載鏈接</button>
+            <h1 id="inviteCode">---</h1>
+            <button id="btnInviteCodeCopy" class="invite-btn" onclick="InviteCodeCopy()">
+                <img src="img/myincome/invite/copy-code.png"></button>
+        </div>
+        <h2 id="sumReward" class="text-tip" data-text="">邀請滿1000人可領總獎金$276.3</h2>
+        <table id="taskList">
+            <tr>
+                <th align="left">成功邀請(人)</th>
+                <th>獎勵</th>
+            </tr>
+        </table>
+        <div class="description">
+            <h1>活動規則</h1>
+            <ul>
+                <li><span class="num">1</span>
+                    <p id="pInviteCount">被邀請玩家需要將普通天神升至5級</p>
+                </li>
+                <li><span class="num">2</span>
+                    <p>由於馬來西亞地區的廣告是其他地區的0.3倍，所以邀請三個馬來西亞玩家等於一個計數</p>
+                </li>
+                <li><span class="num">3</span>
+                    <p>如果發現作弊情況，將直接封號</p>
+                </li>
+                <li><span class="num">4</span>
+                    <p id="pWatchVideo">調整首次提現金額獎勵需要觀看60個廣告後才能使用</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+<input id="copy_content" type="text" value="" style="position: absolute; top: 0; left: 0; opacity: 0; z-index: -10;" />
+</body>
+<script>
+    $(".content").eq(0).show();
+    $(".tab-cell a").click(function () {
+        var num = $(".tab-cell a").index(this);
+        $(".content").hide();
+        $(".content").eq(num).show();
+        $(this).attr("class", "active tab-btn");
+        $(this).siblings().attr("class", "tab-btn");
+    })
+    //禁止双击缩放
+    window.onload = function () {
+        document.addEventListener('touchstart', function (event) {
+            if (event.touches.length > 1) {
+                event.preventDefault();
+            }
+        });
+        var lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            var now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+        document.addEventListener('gesturestart', function (event) {
+            event.preventDefault();
+        });
+    }
+
+    // 获取user
+    var userTianShen = JSON.parse(getCookie("userTianShen"));
+
+    if (userTianShen) {
+        console.log(userTianShen);
+        // 邀請碼
+        $("#inviteCode").html(userTianShen.inviteCode);
+        GetSpecialInviteDetail();
+    } else {
+        console.log("未获取到cookie");
+    }
+
+    // 获取聚宝盆任务详情
+    function GetSpecialInviteDetail() {
+        var urlData = {
+            "gameTaskService.getSpecialInviteDetail": {}
+        }
+        $.ajax({
+            url: "https://app.2loveyou.com:443/xboot/test/v1/object",
+            dataType: "json",
+            type: "POST",
+            headers: {
+                accessToken: userTianShen.accessToken
+            },
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify(urlData),
+            success: function (data) {
+                if (data.code === 200) {
+                    console.log("获取聚宝盆任务详情");
+                    console.log(data);
+                    if (data['result']['gameTaskService.getSpecialInviteDetail'].code === 200) {
+                        var specialInviteDetail = data['result']['gameTaskService.getSpecialInviteDetail'].result;
+                        console.log(specialInviteDetail);
+                        var inviteCount = specialInviteDetail.inviteCount;
+                        var isShow = specialInviteDetail.isShow;
+                        var setting = specialInviteDetail.setting;
+                        var tx = specialInviteDetail.tx;
+                        var watchVideo = specialInviteDetail.watchVideo;
+
+                        var sumReward = 0;
+                        if (setting.length > 0 && isShow) {
+                            for (var i = 0; i < setting.length; i++) {
+                                sumReward = parseFloat(sumReward) + parseFloat(setting[i].reward);
+                                var divHtml = '';
+                                divHtml = divHtml + ' <tr> ';
+                                divHtml = divHtml + ' <td width="60%">' + setting[i].need + '<span class="highlight-txt">(' + setting[i].progress + '/' + setting[i].need + ')</span> ';
+                                if (i === 0) {
+                                    divHtml = divHtml + ' <div class="bubble-tip">完成任務後，首次$' + tx + '即可提現</div> ';
+                                }
+                                divHtml = divHtml + ' </td> ';
+                                divHtml = divHtml + ' <td align="right"><span class="money">$' + setting[i].reward + '</span></td> ';
+                                divHtml = divHtml + ' <td align="center" id="' + setting[i].id + '"> ';
+                                if (setting[i].isGet === 1) {
+                                    divHtml = divHtml + ' <img src="img/myincome/invite/received-simp.png"> ';
+                                } else {
+                                    if (setting[i].need <= setting[i].progress) {
+                                        divHtml = divHtml + ' <button class="red-btn" onclick="RewardSpecialInvite(\'' + setting[i].id + '\')">領取</button> ';
+                                    } else {
+                                        divHtml = divHtml + ' <button disabled class="red-btn">領取</button> ';
+                                    }
+                                }
+                                divHtml = divHtml + ' </td> ';
+                                divHtml = divHtml + ' </tr> ';
+                                jQuery("#taskList").append(divHtml);
+                            }
+                            $("#sumReward").html("邀請滿" + setting[setting.length - 1].need + "人可領總獎金$" + sumReward);
+                        }
+
+                        $("#pInviteCount").html("被邀請玩家需要將普通天神升至" + inviteCount + "級");
+                        $("#pWatchVideo").html("調整首次提現金額獎勵需要觀看" + watchVideo + "個廣告後才能使用");
+                    } else {
+                        console.log(data['result']['gameTaskService.getSpecialInviteDetail'].code + "--" + data['result']['gameTaskService.getSpecialInviteDetail'].message);
+                    }
+                } else {
+                    console.log(data.code + "--" + data.message);
+                }
+
+            }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log(XMLHttpRequest);
+                console.log(textStatus);
+                console.log(errorThrown);
+            }
+        })
+    }
+
+    // 领取聚宝盆奖励
+    function RewardSpecialInvite(taskId) {
+        console.log("taskId:" + taskId);
+        var urlData = {
+            "gameTaskService.rewardSpecialInvite": {
+                taskId: taskId
+            }
+        }
+        $.ajax({
+            url: "https://app.2loveyou.com:443/xboot/test/v1/object",
+            dataType: "json",
+            type: "POST",
+            headers: {
+                accessToken: userTianShen.accessToken
+            },
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify(urlData),
+            success: function (data) {
+                if (data.code === 200) {
+                    console.log("领取聚宝盆奖励");
+                    console.log(data);
+                    var rewardSpecialInviteData = data['result']['gameTaskService.rewardSpecialInvite'];
+                    if (rewardSpecialInviteData.code === 200) {
+                        $("#" + taskId).html('<img src="img/myincome/invite/received-simp.png">');
+                    } else {
+                        console.log(rewardSpecialInviteData.code + "--" + rewardSpecialInviteData.message);
+                    }
+                } else {
+                    console.log(data.code + "--" + data.message);
+                }
+
+            }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log(XMLHttpRequest);
+                console.log(textStatus);
+                console.log(errorThrown);
+            }
+        })
+    }
+
+
+    // 复制
+    var tipsHtml = '<div id="share-tips" style="position: fixed;top: 50%;left:50%;background: rgba(0,0,0,.5);border-radius: 4px;margin: 0 auto;color: #fff;z-index: 9999;padding: 5px 10px;font-size: 14px;text-align: center;transform: translate(-50%,-50%);">' + '<p>' + '已复制' + '</p></div>';
+    function DownloadCopy() {
+        // 复制下载链接
+        var downloadUrl = "https://www.tianshenshijie.com/page.html?pid=951#" + userTianShen.inviteCode;
+        //获取要赋值的input的元素
+        var inputElement = document.getElementById("copy_content");
+        //给input框赋值
+        inputElement.value = downloadUrl;
+        //选中input框的内容
+        inputElement.select();
+        // 执行浏览器复制命令
+        document.execCommand("Copy");
+        //提示已复制
+        $("body").append(tipsHtml); setTimeout(function () { $("#share-tips").remove() }, 1000);
+    }
+
+    function InviteCodeCopy() {
+        //获取要赋值的input的元素
+        var inputElement = document.getElementById("copy_content");
+        //给input框赋值
+        inputElement.value = userTianShen.inviteCode;
+        //选中input框的内容
+        inputElement.select();
+        // 执行浏览器复制命令
+        document.execCommand("Copy");
+        //提示已复制
+        $("body").append(tipsHtml); setTimeout(function () { $("#share-tips").remove() }, 1000);
+    }
+
+</script>
+<script async defer crossorigin="anonymous"
+        src="https://connect.facebook.net/zh_TW/sdk.js#xfbml=1&version=v6.0&appId=288950568740355&autoLogAppEvents=1"></script>
+<script src="https://count.xxxssk.com?1216"></script>
+</html>
+
